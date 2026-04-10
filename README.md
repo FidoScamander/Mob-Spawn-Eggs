@@ -1,14 +1,29 @@
+# 🥚 MobSpawnEggs
 
-Server owners can create their own translations by modifying this file.
+MobSpawnEggs is a lightweight server-side mod for Hytale that adds single-use spawn eggs for all available creatures.
 
-## 💙 Credits
+## ✨ Features
 
-This mod was originally inspired by the **Entity Spawn Eggs** mod:  
-https://www.curseforge.com/hytale/mods/entity-spawn-eggs
+- Spawn eggs for animals and creatures  
+- Single-use eggs (consumed after spawning)  
+- Organized creative inventory categories:
+  - Mammals
+  - Birds
+  - Aquatic Creatures
+  - Reptiles & Amphibians
+  - Others
+- Clean and lightweight implementation  
+- Fully server-side compatible  
+- Easy to customize and extend  
 
-It has been expanded, reorganized, and improved for better usability and stability.
+## 📦 Installation
 
-## 📜 License
+1. Download `MobSpawnEggs-2.0.0.jar`
+2. Place the file inside your server `mods` folder
+3. Start the server
 
-Free to use on servers and modpacks.  
-Attribution is appreciated but not required.
+That's it. The mod is ready to use.
+
+## 🌍 Customization
+
+You can translate category names and item names by editing:
