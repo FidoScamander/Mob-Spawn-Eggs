@@ -1,45 +1,44 @@
-# 🥚 MobSpawnEggs
-MobSpawnEggs is a lightweight server-side mod for Hytale that adds single-use spawn eggs for all available creatures.
+# MobSpawnEggs — Free Edition
 
+**Version 3.0.2** · Hytale Server 0.6.x
 
-## ✨ Features
-- Spawn eggs for animals and creatures  
-- Single-use eggs (consumed after spawning)  
-- Organized creative inventory categories:
-  - Mammals
-  - Birds
-  - Aquatic Creatures
-  - Reptiles & Amphibians
-  - Others
-- Clean and lightweight implementation  
-- Fully server-side compatible  
-- Easy to customize and extend  
+MobSpawnEggs Free is a lightweight server-side mod that adds single-use spawn eggs for available vanilla Hytale animals, creatures, monsters and NPCs.
 
+## Features
 
-## 📦 Installation
-1. Download `MobSpawnEggs-2.0.0.jar`
-2. Place the file inside your server `mods` folder
-3. Start the server
+- 266 single-use spawn eggs.
+- Left-click/direct spawning only. No throwable-egg mode.
+- Server-authoritative target validation with a downward aim range from -20° to -90°.
+- A valid target surface is required within 8 blocks.
+- The egg is consumed only after Hytale confirms a successful NPC spawn.
+- Optional world blacklist and direct-spawn diagnostics/logging.
+- Eight bundled languages: English, Italian, German, Spanish, French, Brazilian Portuguese, Russian and Turkish.
+- Automatic regional locale fallback for the bundled language families.
+- Uses vanilla NPC/mob EntityIds and leaves vanilla AI/behavior rules untouched.
+- No MobSpawnEggs permissions are registered in the Free edition.
 
-That's it. The mod is ready to use.
+## Installation
 
+1. Place `MobSpawnEggs-3.0.2.jar` in the server `mods` folder.
+2. Start or restart the server.
+3. Open the Creative Library and look for the MobSpawnEggs categories.
 
-## 🌍 Customization
-You can translate category names and item names by editing:
+## Configuration
 
+On first start the mod creates `mods/MobSpawnEggs/config.json`. It supports world blacklisting, debug/console output, success/failure logging and log retention. The default retention is 15 days; `0` disables automatic retention cleanup. Older daily Free-edition log files are consolidated automatically.
 
-## 💙 Inspiration
-This mod was inspired by the **Entity Spawn Eggs** mod created by scouter567:  
-https://www.curseforge.com/hytale/mods/entity-spawn-eggs
+## Building from source
 
-The original mod introduced spawn eggs for many game entities, making it easier to spawn creatures in the world.
+The project targets Java 21 and expects a local `libs/HytaleServer.jar`. Run `gradle build` from the repository root.
 
-MobSpawnEggs expands on this idea with:
+The 266 egg definitions live in `src/main/egg-data/eggs.tsv`. Translation source is split into small, human-readable TSV catalogs under `src/main/locale-data`; Gradle emits the eight Hytale `server.lang` files and the regional fallback table during resource processing. PNG textures/icons and the Creative Library category art are kept as normal assets under `src/main/resources/Common`.
 
-- Single-use spawn eggs  
-- Organized categories  
-- Optimization for survival servers  
-- Better integration with economy and shops  
-- Improved creature organization  
+## Compatibility
 
-Special thanks to **scouter567** for the original idea.
+- Hytale Server: `>=0.6.0 <0.7.0`
+- Tested on Hytale Server 0.6.1
+- Java: 21
+
+## License
+
+MIT. See `LICENSE`.

@@ -1,0 +1,8 @@
+{
+  "id": "mobspawneggs",
+  "name": "MobSpawnEggs",
+  "version": "3.0.2",
+  "author": "Newt_Scamander",
+  "description": "Free edition: single-use spawn eggs for available vanilla Hytale animals, creatures, monsters and NPCs, with direct left-click spawning.",
+  "main": "me.newtscamander.mobspawneggs.MobSpawnEggsPlugin"
+}

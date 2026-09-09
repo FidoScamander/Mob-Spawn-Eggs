@@ -1,0 +1,14 @@
+{
+  "Icon": "Icons/ItemCategories/SpawnEggs_Main.png",
+  "Order": 0,
+  "Children": [
+    { "Id": "Mammals", "Name": "server.ui.itemcategory.eggs.mammals", "Icon": "Icons/ItemCategories/SpawnEggs_Mammals.png" },
+    { "Id": "Birds", "Name": "server.ui.itemcategory.eggs.birds", "Icon": "Icons/ItemCategories/SpawnEggs_Birds.png" },
+    { "Id": "Aquatic", "Name": "server.ui.itemcategory.eggs.aquatic", "Icon": "Icons/ItemCategories/SpawnEggs_Aquatic.png" },
+    { "Id": "ReptilesAmphibians", "Name": "server.ui.itemcategory.eggs.reptilesamphibians", "Icon": "Icons/ItemCategories/SpawnEggs_ReptilesAmphibians.png" },
+    { "Id": "HumanoidsConstructs", "Name": "server.ui.itemcategory.eggs.humanoidsconstructs", "Icon": "Icons/ItemCategories/SpawnEggs_HumanoidsConstructs.png" },
+    { "Id": "BeastsCreatures", "Name": "server.ui.itemcategory.eggs.beastscreatures", "Icon": "Icons/ItemCategories/SpawnEggs_BeastsCreatures.png" },
+    { "Id": "UndeadSpirits", "Name": "server.ui.itemcategory.eggs.undeadspirits", "Icon": "Icons/ItemCategories/SpawnEggs_UndeadSpirits.png" },
+    { "Id": "Tools", "Name": "server.ui.itemcategory.eggs.tools", "Icon": "Icons/ItemCategories/Items-Tools.png" }
+  ]
+}

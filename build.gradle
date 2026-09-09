@@ -1,0 +1,158 @@
+plugins {
+    id 'java'
+}
+
+group = 'me.newtscamander'
+version = '3.0.2'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly files('libs/HytaleServer.jar')
+}
+
+def eggData = file('src/main/egg-data/eggs.tsv')
+def generatedEggResources = layout.buildDirectory.dir('generated/mobspawneggs/eggs')
+def localeDataDir = file('src/main/locale-data')
+def generatedLocaleResources = layout.buildDirectory.dir('generated/mobspawneggs/locales')
+
+tasks.register('generateSpawnEggResources') {
+    inputs.file(eggData)
+    outputs.dir(generatedEggResources)
+
+    doLast {
+        def root = generatedEggResources.get().asFile
+        def output = new File(root, 'Server/Item/Items/EggSpawner')
+        delete(output)
+        output.mkdirs()
+
+        eggData.readLines('UTF-8').drop(1).each { line ->
+            if (line.isBlank()) return
+            def fields = line.split('\t', -1)
+            if (fields.length != 4) throw new GradleException("Invalid egg descriptor: ${line}")
+
+            def resourceKey = fields[0]
+            def entityId = fields[1]
+            def color = fields[2]
+            def category = fields[3]
+            new File(output, "Egg_Spawner_${resourceKey}.json").text = """{
+  \"TranslationProperties\": { \"Name\": \"server.items.MSE.Egg_Spawner_${resourceKey}.name\" },
+  \"Quality\": \"Common\",
+  \"PlayerAnimationsId\": \"Item\",
+  \"Interactions\": { \"Primary\": { \"Interactions\": [ { \"Type\": \"MSESpawnNPCDirect\", \"EntityId\": \"${entityId}\" } ] } },
+  \"Model\": \"Items/Consumables/Food/Egg.blockymodel\",
+  \"Texture\": \"Items/Consumables/Food/Egg_${color}_Texture.png\",
+  \"Icon\": \"Icons/ItemsGenerated/Egg_${color}.png\",
+  \"IconProperties\": { \"Rotation\": [22.5, 45, 22.5], \"Scale\": 0.7, \"Translation\": [0, -5.4] },
+  \"Tags\": { \"Type\": [\"Food\"] },
+  \"Categories\": [\"Eggs.${category}\"]
+}
+"""
+        }
+    }
+}
+
+tasks.register('generateLocaleResources') {
+    inputs.files(fileTree(localeDataDir) { include '*.tsv' })
+    outputs.dir(generatedLocaleResources)
+
+    doLast {
+        def root = generatedLocaleResources.get().asFile
+        def languageRoot = new File(root, 'Server/Languages')
+        delete(languageRoot)
+        languageRoot.mkdirs()
+
+        def catalogs = fileTree(localeDataDir) { include '*.tsv' }.files.toList().sort { it.name }
+        if (catalogs.isEmpty()) throw new GradleException('No locale catalogs found')
+
+        def locales = []
+        def outputs = [:]
+        catalogs.each { catalog ->
+            def rows = catalog.readLines('UTF-8')
+            if (rows.isEmpty()) return
+            def header = rows.first().split('\t', -1)
+            def catalogLocales = header.drop(1)
+            if (locales.isEmpty()) {
+                locales.addAll(catalogLocales)
+                locales.each { locale ->
+                    outputs[locale] = new StringBuilder("# MobSpawnEggs 3.0.2 - ${locale}\n")
+                }
+            } else if (catalogLocales != locales) {
+                throw new GradleException("Locale columns differ in ${catalog.name}")
+            }
+
+            rows.drop(1).each { row ->
+                if (row.isBlank()) return
+                def fields = row.split('\t', -1)
+                if (fields.length != header.length) {
+                    throw new GradleException("Invalid row in ${catalog.name}: ${row}")
+                }
+                def key = fields[0]
+                locales.eachWithIndex { locale, index ->
+                    def value = fields[index + 1]
+                            .replace('\\t', '\t')
+                            .replace('\\n', '\n')
+                            .replace('\\\\', '\\')
+                    outputs[locale].append(key).append('=').append(value).append('\n')
+                }
+            }
+        }
+
+        outputs.each { locale, text ->
+            def file = new File(languageRoot, "${locale}/server.lang")
+            file.parentFile.mkdirs()
+            file.setText(text.toString(), 'UTF-8')
+        }
+
+        def targets = [en: 'en-US', it: 'it-IT', de: 'de-DE', es: 'es-ES',
+                       fr: 'fr-FR', pt: 'pt-BR', ru: 'ru-RU', tr: 'tr-TR']
+        def countries = java.util.Locale.getISOCountries().toList().sort()
+        def fallback = new StringBuilder('# MobSpawnEggs Free regional locale fallbacks\n')
+        fallback.append('# Generated from the ISO 3166-1 alpha-2 country list.\n\n')
+        targets.each { language, target ->
+            fallback.append("# ${language} -> ${target}\n${language}=${target}\n")
+            def ownRegion = target.substring(3)
+            countries.each { country ->
+                if (country != ownRegion) {
+                    fallback.append("${language}-${country}=${target}\n")
+                    fallback.append("${language}_${country}=${target}\n")
+                }
+            }
+            if (language == 'en') fallback.append('en-001=en-US\nen_001=en-US\n')
+            else if (language == 'es') fallback.append('es-419=es-ES\nes_419=es-ES\n')
+            fallback.append('\n')
+        }
+        new File(languageRoot, 'fallback.lang').setText(fallback.toString(), 'UTF-8')
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir generatedEggResources
+            srcDir generatedLocaleResources
+        }
+    }
+}
+
+tasks.named('processResources') {
+    dependsOn tasks.named('generateSpawnEggResources')
+    dependsOn tasks.named('generateLocaleResources')
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+jar {
+    archiveBaseName = 'MobSpawnEggs'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
